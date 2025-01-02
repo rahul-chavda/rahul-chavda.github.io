@@ -25,9 +25,6 @@
 	<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" rel="stylesheet">
 	{% endif %}
 	{% endif %}
-	{% if article %}
-	<link rel="stylesheet" href="/theme/bluesky-comments.css">
-	{% endif %}
 
 	<!-- Favicons -->
 	<link rel="apple-touch-icon" sizes="180x180" href="/{{ ICONS_PATH }}/apple-touch-icon.png">
@@ -47,7 +44,8 @@
 		<header>
 			<a href="/"><img id="avatar" alt="Site Avatar" src="/{{ ICONS_PATH }}/avatar.png"></a>
 			<a href="/">home</a> &bull;
-			<a href="/archive">writing</a>
+			<a href="/archive">thoughts</a> &bull;
+			<a href="/archive">resume</a>
 		</header>
 
 		<article>
@@ -65,39 +63,5 @@
 			{% endif %}
 		</footer>
 	</div>
-
-	{% if article %}
-	<script type="importmap">
-		{
-			"imports": {
-				"react": "https://esm.sh/react@18",
-				"react-dom": "https://esm.sh/react-dom@18"
-			}
-		}
-	</script>
-
-	<script type="module">
-		import { BlueskyComments } from '/theme/js/bluesky-comments.min.js';
-		document.addEventListener('DOMContentLoaded', function() {
-			const uri = document.querySelector("meta[property='bsky:url']")?.getAttribute("content");
-			const author = document.querySelector("meta[property='bsky:handle']")?.getAttribute("content");
-
-			const config = {
-				commentFilters: [
-					BlueskyComments.Filters.NoPins,
-					BlueskyComments.Filters.MinCharacterCountFilter(5),
-				]
-			};
-
-			if (uri) {
-				config.uri = uri;
-			} else if (author) {
-				config.author = author;
-			}
-
-			BlueskyComments.init('bluesky-comments', config);
-		});
-	</script>
-	{% endif %}
 </body>
 </html>

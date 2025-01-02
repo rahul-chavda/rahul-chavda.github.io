@@ -54,7 +54,6 @@ Here are theme-specific settings that should be present in the Pelican configura
 | `ICONS_PATH`        | Location of site icons (ex. `images/icons`)            |
 | `SITE_AUTHOR`       | Used for author `<meta>`                               |
 | `TWITTER_USERNAME`  | Used for Twitter Cards `<meta>`                        |
-| `GOOGLE_PLUS_URL`   | Used for Google+ `<meta>`                              |
 | `INDEX_DESCRIPTION` | Used for description `<meta>` on index page            |
 | `SIDEBAR_LINKS`     | List of anchor elements to be displayed under bio text |
 | `GOOGLE_FONTS`      | List of fonts to import from Google Fonts (optional)   |
