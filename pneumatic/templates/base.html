@@ -31,12 +31,6 @@
 	<link rel="icon" type="image/png" href="/{{ ICONS_PATH }}/favicon-16x16.png" sizes="16x16">
 	<link rel="icon" type="image/png" href="/{{ ICONS_PATH }}/favicon-32x32.png" sizes="32x32">
 	<meta name="theme-color" content="{{ THEME_COLOR }}">
-
-	<meta name="msapplication-TileColor" content="{{ THEME_COLOR }}">
-	<meta name="msapplication-TileImage" content="/{{ ICONS_PATH }}/mstile-144x144.png">
-	{% for name, size in (('square70x70', 'small'), ('square150x150', 'medium'), ('wide310x150', 'wide'), ('square310x310', 'large')) %}
-	<meta name="msapplication-{{ name }}logo" content="/{{ ICONS_PATH }}/mstile-{{ size }}.png">
-	{% endfor %}
 </head>
 
 <body>
@@ -44,8 +38,8 @@
 		<header>
 			<a href="/"><img id="avatar" alt="Site Avatar" src="/{{ ICONS_PATH }}/avatar.png"></a>
 			<a href="/">home</a> &bull;
-			<a href="/archive">thoughts</a> &bull;
-			<a href="/archive">resume</a>
+			<a href="/thoughts">thoughts</a> &bull;
+			<a href="/files/RahulChavda-CV-6-Years.pdf">resume</a>
 		</header>
 
 		<article>

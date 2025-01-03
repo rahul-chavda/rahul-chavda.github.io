@@ -4,19 +4,13 @@
 {% block description %}{{ article.summary | striptags }}{% endblock %}
 
 {% block meta %}
-	<!-- Twitter Cards and Open Graph -->
-	<meta name="twitter:card" content="summary">
-	<meta name="twitter:creator" content="{{ TWITTER_USERNAME }}">
-	<meta name="twitter:domain" content="{{ DOMAIN }}">
-	<meta name="twitter:site" content="{{ TWITTER_USERNAME }}">
+	<!-- Open Graph -->
 	<meta property="og:title" content="{{ article.title|striptags }}">
+	<meta property="og:author" content="{{ article.author }}">
 	<meta property="og:description" content="{{ article.summary|striptags }}">
 	<meta property="og:image" content="{{ SITEURL }}/{{ ICONS_PATH }}/avatar.png">
 	<meta property="og:type" content="article">
 	<meta property="og:url" content="{{ SITEURL }}/{{ article.url }}">
-	{% if BLUESKY_HANDLE %}
-	<meta property="bsky:handle" content="{{ BLUESKY_HANDLE }}">
-	{% endif %}
 {% endblock %}
 
 {% block content %}
@@ -24,6 +18,11 @@
 	<time class="date" datetime="{{ article.date }}">{{ article.locale_date }}</time>
 	<div class="content">
 		{{ article.content }}
+	</div>
+	<div class="tag-wrapper">
+		{% for tag in article.tags %}
+			<a class="tag" href="{{SITE_URL}}/{{tag.url}}">{{tag.name}}</a>
+		{% endfor %}
 	</div>
 
 	{% if article.next_article or article.prev_article %}

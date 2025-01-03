@@ -1,5 +1,6 @@
 AUTHOR = 'Rahul Chavda'
 SITENAME = 'Rahul Chavda'
+SITE_AUTHOR = 'Rahul Chavda'
 SITEURL = "rahul-chavda.github.io"
 PATH = "content"
 
@@ -18,7 +19,7 @@ ARTICLE_SAVE_AS = ARTICLE_URL + 'index.html'
 PAGE_URL = '{slug}/'
 PAGE_SAVE_AS = PAGE_URL + 'index.html'
 
-ARCHIVES_SAVE_AS = 'archive/index.html'
+ARCHIVES_SAVE_AS = 'thoughts/index.html'
 YEAR_ARCHIVE_SAVE_AS = '{date:%Y}/index.html'
 MONTH_ARCHIVE_SAVE_AS = '{date:%Y}/{date:%m}/index.html'
 
@@ -36,13 +37,11 @@ MARKDOWN = {
 
 THEME = 'pneumatic'
 # Theme Configs
-BLUESKY_HANDLE = 'rahulchavda.bsky.social'
 INDEX_DESCRIPTION = 'Website and blog of Rahul Chavda, a software engineer from Ahmedabad, India.'
 
 ICONS_PATH = 'images/icons'
 
 SOCIAL_ICONS = [
-    ('https://bsky.app/profile/rahulchavda.bsky.social', 'Bluesky', 'fa-brands fa-bluesky'),
     ('https://github.com/rahul-chavda', 'GitHub', 'fa-brands fa-github'),
     ('https://instagram.com/this.rahul_chavda', 'Instagram', 'fa-brands fa-instagram'),
     ('/atom.xml', 'Atom Feed', 'fa-solid fa-feed'),
@@ -74,3 +73,4 @@ ASSET_CONFIG = [
 ]
 
 DIRECT_TEMPLATES = ['archives']
+CATEGORY_SAVE_AS = ''

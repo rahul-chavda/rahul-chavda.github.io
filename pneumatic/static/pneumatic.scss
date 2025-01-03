@@ -1,25 +1,5 @@
-/*
-* Styling based on the Skeleton documention (http://www.getskeleton.com/)
-* Copyright 2011, Dave Gamache
-* www.getskeleton.com
-* Free to use under the MIT license.
-* http://www.opensource.org/licenses/mit-license.php
-* 6/20/2012
-*/
-
-// Theme Variables
-
 $main-font: ui-sans-serif, system-ui, sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
 $code-font: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, Courier, monospace;
-
-$social-icons: (
-        "twitter" #55acee,
-        "google-plus-square" #dd4b39,
-        "github" #171515,
-        "soundcloud" #f70,
-        "instagram" #833ab4,
-        "bluesky" #1185fe,
-);
 
 
 // Reset & Basics (Inspired by Eric Meyer)
@@ -172,11 +152,6 @@ a {
     &:hover {
       text-decoration: none;
       color: #222;
-      @each $icon, $colour in $social-icons {
-        &.fa-#{$icon} {
-          color: $colour;
-        }
-      }
     }
   }
 }
@@ -348,6 +323,19 @@ footer p {
   border-radius: 15px;
 }
 
+.hero-content-wrapper {
+  display: flex;
+
+  div:first-child {
+    flex: 1;
+  }
+
+  h2 {
+    margin: 10px 0;
+  }
+}
+
+
 #my-avatar {
   width: 200px;
   border-radius: 10px;
@@ -391,6 +379,23 @@ footer p {
   float: right;
   display: block;
   color: #555;
+}
+
+.tag-wrapper {
+  clear: both;
+  text-align: right;
+  margin-bottom: 10px;
+  .tag {
+    padding: 5px 10px;
+    background: wheat;
+    text-decoration: none;
+    border-radius: 15px;
+    font-size: small;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
 }
 
 .content {
@@ -445,8 +450,17 @@ footer p {
   .title {
     margin-bottom: 0;
   }
+
   .date {
     margin-bottom: 1.5em;
+  }
+
+  .tag-wrapper {
+    text-align: center;
+  }
+
+  #my-avatar {
+    display: none;
   }
 }
 
