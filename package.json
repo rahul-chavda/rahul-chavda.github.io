@@ -12,6 +12,15 @@
     "@astrojs/mdx": "^4.2.0",
     "@astrojs/rss": "^4.0.11",
     "@astrojs/sitemap": "^3.2.1",
-    "astro": "^5.5.2"
+    "@tailwindcss/vite": "^4.0.14",
+    "astro": "^5.5.2",
+    "astro-icon": "^1.1.5",
+    "scss": "^0.2.4",
+    "tailwindcss": "^4.0.14",
+    "typescript": "^5.8.2"
+  },
+  "devDependencies": {
+    "@iconify-json/mdi": "^1.2.3",
+    "sass-embedded": "^1.85.1"
   }
 }

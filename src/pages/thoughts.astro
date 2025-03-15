@@ -1,0 +1,14 @@
+---
+import { getCollection } from 'astro:content';
+import Page from "../layouts/Page.astro";
+import BlogList from "../components/BlogList.astro";
+
+const posts = (await getCollection('blog')).sort(
+  (a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf(),
+);
+---
+
+<Page>
+  <h1 class="text-2xl font-bold mb-5">my thoughts and ideas</h1>
+  <BlogList posts={posts}/>
+</Page>

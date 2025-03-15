@@ -1,0 +1,28 @@
+---
+import { type CollectionEntry, getCollection } from 'astro:content';
+import Page from "../../layouts/Page.astro";
+import BlogList from "../../components/BlogList.astro";
+
+type BlogEntry = CollectionEntry<'blog'>;
+
+export async function getStaticPaths() {
+  const allPosts: BlogEntry[] = await getCollection("blog");
+
+  const allTags = [...new Set(allPosts.flatMap(post => post.data.tags || []))];
+
+  return allTags.map(tag => ({params: {tag: tag.replace(/\s+/g, '-').toLowerCase()}}));
+}
+
+const {tag} = Astro.params;
+
+const posts: BlogEntry[] = (await getCollection('blog'))
+  .sort((a: BlogEntry, b: BlogEntry) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf(),)
+  .filter((post: BlogEntry) => post.data.tags?.map(t => t.replace(/\s+/g, '-').toLowerCase()).includes(tag));
+
+const tagName = posts[0].data.tags?.find(t => t.replace(/\s+/g, '-').toLowerCase() === tag);
+---
+
+<Page>
+  <h1 class="text-2xl font-bold mb-5">{tagName}</h1>
+  <BlogList posts={posts}/>
+</Page>

@@ -1,0 +1,40 @@
+---
+import type { CollectionEntry } from "astro:content";
+import FormattedDate from "./FormattedDate.astro";
+
+type BlogEntry = CollectionEntry<'blog'>;
+
+interface Props {
+  posts: BlogEntry[]
+}
+
+const {posts} = Astro.props;
+const processedPosts = posts.map((post) => {
+  return {
+    slug: post.data.slug,
+    title: post.data.title,
+    pubYear: post.data.pubDate.getFullYear(),
+    pubMonth: post.data.pubDate.toLocaleDateString('en-us', {
+      month: '2-digit',
+    }),
+    pubDate: post.data.pubDate
+  }
+});
+---
+
+<section>
+  <ul>
+    {
+      processedPosts.map((post) => (
+        <li>
+          <a href={`/${post.pubYear}/${post.pubMonth}/${post.slug}/`}>
+            <h4 class="font-medium text-lg">{post.title}</h4>
+            <p class="text-sm text-stone-400">
+              <FormattedDate date={post.pubDate}/>
+            </p>
+          </a>
+        </li>
+      ))
+    }
+  </ul>
+</section>

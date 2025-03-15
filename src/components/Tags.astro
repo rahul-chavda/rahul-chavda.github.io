@@ -1,0 +1,17 @@
+---
+interface Props {
+  tags: string[];
+}
+
+const {tags} = Astro.props;
+const processedTags = tags.map(tag => ({
+  slug: tag.replace(/\s+/g, '-').toLowerCase(),
+  name: tag
+}));
+---
+<div class="text-right">
+  {processedTags && processedTags.map(tag => (
+    <a href={`/tags/${tag.slug}`}
+       class="rounded-xl px-2 py-1 text-sm text-stone-700 bg-orange-200 ml-1 hover:underline">{tag.name}</a>
+  ))}
+</div>
