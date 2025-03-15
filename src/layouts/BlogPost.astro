@@ -35,8 +35,8 @@ const {title, description, pubDate, updatedDate, tags}: Props = Astro.props;
       </div>
     </div>
     <slot/>
-    <Tags tags={tags || []}/>
   </article>
+  <Tags tags={tags || []}/>
 </main>
 <br/>
 <hr class="text-stone-300"/>

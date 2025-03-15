@@ -5,6 +5,10 @@ body {
     line-height: 1.65;
 }
 
+article a {
+    text-decoration: underline;
+}
+
 p {
     color: var(--color-stone-700);
     margin-bottom: --spacing(4);
