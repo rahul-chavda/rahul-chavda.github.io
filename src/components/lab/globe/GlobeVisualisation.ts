@@ -20,6 +20,9 @@ import {
 } from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 
+import { Raycaster, Vector2 } from "three";
+import type { Wonder } from "@components/lab/globe/Wonders.ts";
+
 export class GlobeVisualisation {
   // Constants
   private readonly GLOBE_RADIUS = 5;
@@ -33,7 +36,9 @@ export class GlobeVisualisation {
   private readonly GLOBE_COLOR = 0x226ff5;
   private readonly GLOW_COLOR = 0xc4daff;
   private readonly COLOR_WHITE = 0xffffff;
+  private readonly WONDER_MARKER_COLOR = 0xff0000; // Red color for wonder markers
 
+  private readonly WONDERS: Wonder[] = [];
   private readonly scene: Scene;
   private readonly camera: PerspectiveCamera;
   private readonly renderer: WebGLRenderer;
@@ -50,17 +55,29 @@ export class GlobeVisualisation {
   private animationTime = 0;
   private dotOriginalPositions: Float32Array | null = null;
   private dotAnimationParams: { frequency: number, baseDistance: number }[] = []; // Store animation parameters for each dot
+  private wonderMarkers: Mesh[] = [];
   private boundedHandlers: {
     onMouseDown: () => void;
     onMouseUp: () => void;
     onMouseLeave: () => void;
   };
 
-  constructor(canvas: HTMLCanvasElement) {
+  private readonly raycaster: Raycaster;
+  private readonly mouse: Vector2;
+
+  public onWonderSelected: ((wonder: Wonder) => void) | null = null;
+  public onWonderDeselected: (() => void) | null = null;
+
+  constructor(canvas: HTMLCanvasElement, wonders: Wonder[]) {
     this.canvas = canvas;
     if (!this.canvas) {
       throw new Error('Error with canvas');
     }
+
+    this.WONDERS = wonders;
+
+    this.raycaster = new Raycaster();
+    this.mouse = new Vector2();
 
     const width = window.innerWidth;
     const height = window.innerHeight;
@@ -77,8 +94,8 @@ export class GlobeVisualisation {
     // renderer
     this.renderer = new WebGLRenderer({
       canvas: this.canvas,
-      antialias: false, // Disable antialiasing for performance
-      precision: 'mediump', // Use medium precision
+      antialias: false,
+      precision: 'mediump',
       powerPreference: 'high-performance'
     });
     this.renderer.setPixelRatio(window.devicePixelRatio);
@@ -105,24 +122,65 @@ export class GlobeVisualisation {
     await this.createLandMasses();
     this.createGlowEffect();
     this.setLighting();
+    this.createWonderMarkers();
 
-    // Add event listeners for mouse interaction
     this.canvas.addEventListener('mousedown', this.boundedHandlers.onMouseDown);
     this.canvas.addEventListener('mouseup', this.boundedHandlers.onMouseUp);
     this.canvas.addEventListener('mouseleave', this.boundedHandlers.onMouseLeave);
+    this.canvas.addEventListener('click', this.onCanvasClick.bind(this)); // Add click handler
 
-    // Add touch support for mobile devices
     this.canvas.addEventListener('touchstart', this.boundedHandlers.onMouseDown);
     this.canvas.addEventListener('touchend', this.boundedHandlers.onMouseUp);
     this.canvas.addEventListener('touchcancel', this.boundedHandlers.onMouseLeave);
+    this.canvas.addEventListener('touchend', this.onCanvasTouchEnd.bind(this)); // Add touch handler
 
     window.addEventListener('resize', this.boundedOnWindowResize);
     this.animate();
   }
 
+  private createWonderMarkers(): void {
+    const markerGeometry = new CircleGeometry(0.05, 8);
+    const markerMaterial = new MeshStandardMaterial({
+      color: this.WONDER_MARKER_COLOR,
+      emissive: this.WONDER_MARKER_COLOR,
+      emissiveIntensity: 0.5,
+      side: DoubleSide
+    });
+
+    const DEG2RAD = Math.PI / 180;
+
+    this.WONDERS.forEach(wonder => {
+      const lat = wonder.latitude;
+      const long = wonder.longitude;
+
+      const phi = (90 - lat) * DEG2RAD;
+      const theta = (long + 180) * DEG2RAD;
+
+      const x = -this.GLOBE_RADIUS * Math.sin(phi) * Math.cos(theta);
+      const y = this.GLOBE_RADIUS * Math.cos(phi);
+      const z = this.GLOBE_RADIUS * Math.sin(phi) * Math.sin(theta);
+
+      const marker = new Mesh(markerGeometry, markerMaterial);
+      marker.position.set(x, y, z);
+
+      const direction = new Vector3(x, y, z).normalize();
+
+      marker.position.x += direction.x * 0.03;
+      marker.position.y += direction.y * 0.03;
+      marker.position.z += direction.z * 0.03;
+
+      marker.lookAt(0, 0, 0);
+      marker.rotateY(Math.PI);
+
+      marker.userData = {wonder};
+
+      this.scene.add(marker);
+      this.wonderMarkers.push(marker);
+    });
+  }
+
   private onMouseDown(): void {
     this.isDragging = true;
-    // Reset animation time when starting a new drag
     this.animationTime = 0;
     this.animateDotsHover(true);
   }
@@ -153,7 +211,6 @@ export class GlobeVisualisation {
       const z = this.dotOriginalPositions[idx + 2];
 
       if (hover) {
-        // Calculate normalized direction from center (radial direction)
         const dir = new Vector3(x, y, z).normalize();
         const {frequency, baseDistance} = this.dotAnimationParams[i];
         const oscillation = (1 - Math.cos(this.animationTime * frequency)) * 0.3;
@@ -168,7 +225,6 @@ export class GlobeVisualisation {
         dummy.position.set(x, y, z);
       }
 
-      // Make the instance "look" outward from the center
       dummy.lookAt(0, 0, 0);
       dummy.updateMatrix();
       this.dotsMesh.setMatrixAt(i, dummy.matrix);
@@ -195,10 +251,8 @@ export class GlobeVisualisation {
   }
 
   private createGlobe(): void {
-    // GlobeComponent Geometry
     const globeGeometry = new SphereGeometry(this.GLOBE_RADIUS, this.GLOBE_SEGMENTS, this.GLOBE_SEGMENTS);
 
-    // GlobeComponent Material
     const globeMaterial = new MeshPhysicalMaterial({
       color: this.GLOBE_COLOR,
       roughness: 0.7,
@@ -210,10 +264,8 @@ export class GlobeVisualisation {
   }
 
   private createGlowEffect(): void {
-    // Create a larger sphere for the glow effect
     const glowGeometry = new SphereGeometry(this.GLOBE_RADIUS + 1.2, this.GLOBE_SEGMENTS, this.GLOBE_SEGMENTS);
 
-    // Custom shader material for the glow
     const glowMaterial = new ShaderMaterial({
       uniforms: {
         "c": {value: 0.2},
@@ -249,12 +301,10 @@ export class GlobeVisualisation {
   private async createLandMasses(): Promise<void> {
     const worldMapData = await this.loadWorldMap();
 
-    // Create a small circle geometry for each point
-    const dotGeometry = new CircleGeometry(0.015,8);
+    const dotGeometry = new CircleGeometry(0.015, 8);
 
     const DEG2RAD = Math.PI / 180;
 
-    // Store dot metadata in an array
     const dotMetaData = [];
     for (let lat = -90; lat <= 90; lat += 180 / this.ROWS) {
       const radius = Math.cos(Math.abs(lat) * DEG2RAD) * this.GLOBE_RADIUS;
@@ -264,11 +314,9 @@ export class GlobeVisualisation {
       for (let x = 0; x < dotsForLat; x++) {
         const long = -180 + x * 360 / dotsForLat;
         if (this.visibilityForCoordinate(worldMapData, long, lat)) {
-          // Convert lat/long to 3D position
           const phi = (90 - lat) * DEG2RAD;
           const theta = (long + 180) * DEG2RAD;
 
-          // Calculate position on a sphere
           const x = -this.GLOBE_RADIUS * Math.sin(phi) * Math.cos(theta);
           const y = this.GLOBE_RADIUS * Math.cos(phi);
           const z = this.GLOBE_RADIUS * Math.sin(phi) * Math.sin(theta);
@@ -278,31 +326,26 @@ export class GlobeVisualisation {
       }
     }
 
-    // Create the material for points
     const dotMaterial = new MeshStandardMaterial({
       colorWrite: true,
       side: DoubleSide
     });
 
-    // Create the instanced mesh
     this.dotsMesh = new InstancedMesh(dotGeometry, dotMaterial, dotMetaData.length);
 
     this.dotOriginalPositions = new Float32Array(dotMetaData.length * 3);
 
-    // Position each instance
     const dummy = new Object3D();
 
     for (let i = 0; i < this.dotsMesh.count; i++) {
       const [x, y, z] = dotMetaData[i];
 
-      // Store original positions in typed array
       const idx = i * 3;
       this.dotOriginalPositions[idx] = x;
       this.dotOriginalPositions[idx + 1] = y;
       this.dotOriginalPositions[idx + 2] = z;
 
       dummy.position.set(x, y, z);
-      // Make the instance "look" outward from the center
       dummy.lookAt(0, 0, 0);
       dummy.updateMatrix();
 
@@ -335,27 +378,72 @@ export class GlobeVisualisation {
         const imageData = ctx.getImageData(0, 0, width, height);
         resolve(imageData);
       };
-      // Use your world map silhouette image
       img.src = this.WORLD_MAP_URL;
     });
   }
 
   private visibilityForCoordinate(imageData: ImageData, long: number, lat: number): boolean {
-    // Convert longitude and latitude to image coordinates
     const width = imageData.width;
     const height = imageData.height;
 
-    // Map from -180..180 to 0..width
     const x = Math.floor(((long + 180) / 360) * width);
-    // Map from -90..90 to height..0 (invert Y)
     const y = Math.floor((1 - ((lat + 90) / 180)) * height);
 
-    // Get the pixel data (RGBA)
     const index = (y * width + x) * 4;
-    const alpha = imageData.data[index + 3]; // Alpha channel
+    const alpha = imageData.data[index + 3];
 
-    // Return true if the pixel is not transparent (land)
-    return alpha >= 90; // Threshold value
+    return alpha >= 90;
+  }
+
+
+  private showWonderDetails(wonder: Wonder): void {
+    if (this.onWonderSelected) {
+      this.onWonderSelected(wonder);
+    }
+  }
+
+  private hideWonderDetails(): void {
+    if (this.onWonderDeselected) {
+      this.onWonderDeselected();
+    }
+  }
+
+  private onCanvasClick(event: MouseEvent): void {
+    if (this.isDragging) return;
+
+    const rect = this.canvas.getBoundingClientRect();
+    this.mouse.x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
+    this.mouse.y = -((event.clientY - rect.top) / rect.height) * 2 + 1;
+
+    this.checkMarkerIntersection();
+  }
+
+  private onCanvasTouchEnd(event: TouchEvent): void {
+    if (this.isDragging) return;
+
+    if (event.changedTouches.length > 0) {
+      const touch = event.changedTouches[0];
+      const rect = this.canvas.getBoundingClientRect();
+      this.mouse.x = ((touch.clientX - rect.left) / rect.width) * 2 - 1;
+      this.mouse.y = -((touch.clientY - rect.top) / rect.height) * 2 + 1;
+
+      this.checkMarkerIntersection();
+    }
+  }
+
+  private checkMarkerIntersection(): void {
+    this.raycaster.setFromCamera(this.mouse, this.camera);
+
+    const intersects = this.raycaster.intersectObjects(this.wonderMarkers);
+
+    if (intersects.length > 0) {
+      const marker = intersects[0].object;
+      const wonder = marker.userData.wonder as Wonder;
+
+      this.showWonderDetails(wonder);
+    } else {
+      this.hideWonderDetails();
+    }
   }
 
   public dispose(): void {
@@ -367,11 +455,13 @@ export class GlobeVisualisation {
     this.canvas.removeEventListener('mousedown', this.boundedHandlers.onMouseDown);
     this.canvas.removeEventListener('mouseup', this.boundedHandlers.onMouseUp);
     this.canvas.removeEventListener('mouseleave', this.boundedHandlers.onMouseLeave);
+    this.canvas.removeEventListener('click', this.onCanvasClick.bind(this));
 
     // Remove touch event listeners
     this.canvas.removeEventListener('touchstart', this.boundedHandlers.onMouseDown);
     this.canvas.removeEventListener('touchend', this.boundedHandlers.onMouseUp);
     this.canvas.removeEventListener('touchcancel', this.boundedHandlers.onMouseLeave);
+    this.canvas.removeEventListener('touchend', this.onCanvasTouchEnd.bind(this));
 
     window.removeEventListener('resize', this.boundedOnWindowResize);
 
@@ -383,9 +473,13 @@ export class GlobeVisualisation {
   private animate = (): void => {
     this.animationFrameId = requestAnimationFrame(this.animate);
 
-    // Increment animation time if dots are in hover state
+    this.wonderMarkers.forEach(marker => {
+      const pulseFactor = 1 + Math.sin(Date.now() * 0.003) * 0.1;
+      marker.scale.set(pulseFactor, pulseFactor, pulseFactor);
+    });
+
     if (this.isDragging) {
-      this.animationTime += 0.02; // Reduced to create slower animation
+      this.animationTime += 0.02;
       this.animateDotsHover(true);
     }
 

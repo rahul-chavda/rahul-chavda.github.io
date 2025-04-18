@@ -2,15 +2,22 @@
 import GlobeComponent from "@components/lab/globe/GlobeComponent.vue"
 import LabPage from "@layouts/LabPage.astro";
 import { Icon } from "astro-icon/components";
+import '@styles/tailwind.css';
 ---
-<LabPage>
+<LabPage title="wonders of the world">
   <div class="relative">
-    <div class="absolute top-0 left-0 m-6">
-      <a href="/lab" class="bg-white flex items-center gap-2 p-2">
-        <Icon name="mdi:arrow-left">lab</Icon>
-        <span>lab</span>
-      </a>
+    <div class="absolute top-0 left-0 right-0 z-40">
+      <div class="flex justify-between m-6">
+        <a href="/lab" class="bg-white flex items-center gap-2 p-2 rounded">
+          <Icon name="mdi:arrow-left">lab</Icon>
+          <span>lab</span>
+        </a>
+        <h1 class="text-gray-200 text-2xl text-shadow-2xs">Wonders of the world</h1>
+      </div>
     </div>
-    <GlobeComponent client:only></GlobeComponent>
+    <GlobeComponent client:only>
+      <Icon name="mdi:directions" slot="icon-location"/>
+      <Icon name="mdi:info" slot="icon-info"/>
+    </GlobeComponent>
   </div>
 </LabPage>
