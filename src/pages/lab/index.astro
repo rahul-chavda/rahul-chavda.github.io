@@ -1,0 +1,30 @@
+---
+import Page from "@layouts/Page.astro";
+
+// Sample lab items - replace with your actual data
+const labItems = [
+  {
+    title: "Globe",
+    description: "github inspired globe made with three.js",
+    link: "/lab/globe",
+  },
+];
+---
+<Page>
+  <div>
+    <h1 class="text-2xl font-bold mb-5">projects, experiments and stuff</h1>
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+      {labItems.map(item => (
+        <a href={item.link} class="block">
+          <div
+            class="rounded-lg shadow-md overflow-hidden border border-gray-200 h-full hover:shadow-lg transition-shadow duration-300">
+            <div class="p-4">
+              <h2 class="mb-3 text-base font-semibold text-gray-800">{item.title}</h2>
+              <p class="text-sm mb-0">{item.description}</p>
+            </div>
+          </div>
+        </a>
+      ))}
+    </div>
+  </div>
+</Page>
