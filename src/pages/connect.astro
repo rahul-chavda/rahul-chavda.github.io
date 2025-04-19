@@ -1,0 +1,14 @@
+---
+import Page from "@layouts/Page.astro";
+import { AUTHOR_EMAIL } from "../consts";
+---
+<Page title="connect with me">
+  <div>
+    <h1 class="text-2xl font-bold mb-6">Let's Connect</h1>
+    <p>I'm always interested in new opportunities, collaborations, or just a friendly chat.</p>
+    <p>
+      Email me at <a href={`mailto:${AUTHOR_EMAIL}`} class="underline">{AUTHOR_EMAIL}</a> or connect me over any of the
+      social media below.
+    </p>
+  </div>
+</Page>

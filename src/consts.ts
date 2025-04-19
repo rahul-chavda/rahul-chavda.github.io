@@ -4,3 +4,4 @@
 export const SITE_TITLE = 'Rahul Chavda';
 export const SITE_AUTHOR = 'Rahul Chavda';
 export const SITE_DESCRIPTION = 'Rahul\'s Blog';
+export const AUTHOR_EMAIL = 'rchavda88@gmail.com';
