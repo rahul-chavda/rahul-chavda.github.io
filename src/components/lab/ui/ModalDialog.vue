@@ -102,7 +102,7 @@ const titleClass = computed(() =>
             </div>
 
             <button v-if="!hideCloseButton"
-                    :class="['text-xl font-bold ml-4', closeButtonClass]"
+                    :class="['text-xl font-bold ml-4 cursor-pointer', closeButtonClass]"
                     @click="closeModal"
                     aria-label="Close modal">
               ×
