@@ -1,0 +1,4 @@
+@import "tailwindcss" source(none);
+
+@source "../pages/lab/globe.astro";
+@source "../components/lab/globe";

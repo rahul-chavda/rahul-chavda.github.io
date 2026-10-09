@@ -10,7 +10,7 @@ export async function getStaticPaths() {
   return posts.map((post) => ({
     params: {
       slug: post.data.slug,
-      year: post.data.pubDate.getFullYear(),
+      year: post.data.pubDate.getFullYear().toString(),
       month: post.data.pubDate.toLocaleDateString('en-us', {
         month: '2-digit',
       })

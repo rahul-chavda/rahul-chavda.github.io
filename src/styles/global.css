@@ -1,4 +1,10 @@
-@import "tailwindcss";
+@import "tailwindcss" source(none);
+
+@source "../pages";
+@source not "../pages/lab";
+@source "../layouts";
+@source "../components/layout";
+@source "../content";
 
 body {
     font-family: ui-sans-serif, system-ui, sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;

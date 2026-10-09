@@ -1,0 +1,5 @@
+@import "tailwindcss" source(none);
+
+@source "../pages/lab/iptv.astro";
+@source "../components/lab/iptv";
+@source "../components/lab/ui/ModalDialog.vue";
