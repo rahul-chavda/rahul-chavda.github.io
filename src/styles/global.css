@@ -1,7 +1,8 @@
 @import "tailwindcss" source(none);
 
 @source "../pages";
-@source not "../pages/lab";
+@source not "../pages/lab/globe.astro";
+@source not "../pages/lab/iptv.astro";
 @source "../layouts";
 @source "../components/layout";
 @source "../content";

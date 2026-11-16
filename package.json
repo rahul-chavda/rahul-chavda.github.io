@@ -24,6 +24,6 @@
   "devDependencies": {
     "@iconify-json/mdi": "^1.2.3",
     "@types/three": "^0.187.0",
-    "video.js": "^8.24.2"
+    "hls.js": "^1.7.4"
   }
 }

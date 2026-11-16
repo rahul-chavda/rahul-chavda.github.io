@@ -1,32 +1,31 @@
 <template>
   <div class="w-screen h-screen overflow-hidden relative" tabindex="0">
-    <video ref="videoPlayer" class="video-js w-full h-full object-cover" preload="auto"/>
+    <video ref="videoPlayer" class="bg-black w-full h-full object-cover" playsinline preload="auto" />
 
     <div v-if="!isPlaying" class="absolute inset-0 w-full h-full z-10 bg-black"></div>
 
     <div v-if="isPlayerLoading && isPlaying"
-         class="absolute inset-0 w-full h-full z-10 bg-black/70 flex items-center justify-center bg-[url(/resources/static.gif)] bg-repeat bg-size=[200px]">
+      class="absolute inset-0 w-full h-full z-10 bg-black/70 flex items-center justify-center bg-[url(/resources/static.gif)] bg-repeat bg-size=[200px]">
     </div>
 
-    <div v-if="showChannelNameIndicator"
-         class="absolute top-8 left-8 z-20 transition-opacity duration-300"
-         :class="{'opacity-100': showChannelNameIndicator, 'opacity-0': !showChannelNameIndicator}">
+    <div v-if="showChannelNameIndicator" class="absolute top-8 left-8 z-20 transition-opacity duration-300"
+      :class="{ 'opacity-100': showChannelNameIndicator, 'opacity-0': !showChannelNameIndicator }">
       <div class="px-4 py-2 text-green-500 text-3xl font-bold">
         CH #{{ currentChannelIndex + 1 }} - {{ currentChannelName }}
       </div>
     </div>
 
     <div v-if="showVolumeIndicator"
-         class="absolute bottom-40 left-1/2 transform -translate-x-1/2 z-20 transition-opacity duration-300"
-         :class="{'opacity-100': showVolumeIndicator, 'opacity-0': !showVolumeIndicator}">
+      class="absolute bottom-40 left-1/2 transform -translate-x-1/2 z-20 transition-opacity duration-300"
+      :class="{ 'opacity-100': showVolumeIndicator, 'opacity-0': !showVolumeIndicator }">
       <div class="px-4 py-2 rounded-md flex items-center flex-col">
         <div class="text-green-500 text-2xl self-start uppercase font-semibold mb-2">VOLUME</div>
 
         <div class="h-15 flex items-center space-x-1">
           <div v-for="i in VOLUME_BARS" :key="i" class="h-full w-3 relative overflow-hidden">
             <div class="absolute bottom-0 w-full"
-                 :class="i <= Math.round(volume * VOLUME_BARS) ? 'bg-green-500' : 'bg-transparent'"
-                 :style="{height: i <= Math.round(volume * VOLUME_BARS) ? '100%' : '0%'}">
+              :class="i <= Math.round(volume * VOLUME_BARS) ? 'bg-green-500' : 'bg-transparent'"
+              :style="{ height: i <= Math.round(volume * VOLUME_BARS) ? '100%' : '0%' }">
             </div>
           </div>
         </div>
@@ -84,15 +83,15 @@
     </ModalDialog>
 
     <ModalDialog v-model="showChannelListModal" :title="`Channel List (${totalChannels})`" theme="dark" maxWidth="lg"
-                 @close="channelSearchQuery=''">
+      @close="channelSearchQuery = ''">
       <template #body>
         <div>
           <div class="mb-4">
             <div class="relative">
               <input type="text" v-model="channelSearchQuery" placeholder="Search channels..."
-                     class="w-full px-4 py-2 bg-gray-800 text-white rounded-md border border-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500"/>
-              <button v-if="channelSearchQuery" @click="channelSearchQuery=''"
-                      class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-white cursor-pointer">
+                class="w-full px-4 py-2 bg-gray-800 text-white rounded-md border border-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500" />
+              <button v-if="channelSearchQuery" @click="channelSearchQuery = ''"
+                class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-white cursor-pointer">
                 ×
               </button>
             </div>
@@ -101,7 +100,7 @@
           <div v-if="filteredChannels.length > 0" class="space-y-2 max-h-64 overflow-scroll">
             <div class="flex flex-col gap-2">
               <div v-for="channel in filteredChannels" :key="channel.url" @click="handleChannelSelect(channel)"
-                   class="flex p-2 rounded-md hover:bg-gray-700/50 cursor-pointer transition-colors duration-200">
+                class="flex p-2 rounded-md hover:bg-gray-700/50 cursor-pointer transition-colors duration-200">
                 <div class="flex-shrink-0 mr-4 text-center w-10 text-gray-300 font-semibold text-2xl">
                   {{ channel.channelNumber }}
                 </div>
@@ -129,56 +128,64 @@
         <div class="bg-gray-900/80 p-4 rounded-2xl shadow-lg">
           <div class="grid grid-cols-2 gap-3">
             <a href="/lab" class="flex items-center justify-center w-10 h-10 text-white rounded text-2xl">
-              <slot name="icon-back"/>
+              <slot name="icon-back" />
             </a>
             <!-- on/off button -->
             <button @click="togglePlayPause"
-                    class="flex items-center justify-center w-10 h-10 bg-red-500 rounded-full cursor-pointer">
-              <slot name="icon-on-off"/>
+              class="flex items-center justify-center w-10 h-10 bg-red-500 rounded-full cursor-pointer">
+              <slot name="icon-on-off" />
             </button>
             <!--channel list-->
             <button @click="showChannelListModal = true"
-                    class="flex items-center justify-center w-10 h-10 bg-white rounded-md cursor-pointer text-2xl">
-              <slot name="icon-book"/>
+              class="flex items-center justify-center w-10 h-10 bg-white rounded-md cursor-pointer text-2xl">
+              <slot name="icon-book" />
             </button>
             <!--mute/unmute button-->
             <button @click="toggleMute"
-                    class="flex items-center justify-center w-10 h-10 bg-white rounded-md cursor-pointer text-2xl">
-              <span v-if="isMuted" class="text-red-500"><slot name="icon-volume-mute"/></span>
-              <span v-else><slot name="icon-volume-high"/></span>
+              class="flex items-center justify-center w-10 h-10 bg-white rounded-md cursor-pointer text-2xl">
+              <span v-if="isMuted" class="text-red-500">
+                <slot name="icon-volume-mute" />
+              </span>
+              <span v-else>
+                <slot name="icon-volume-high" />
+              </span>
             </button>
             <!-- volume up/down -->
             <div class="flex justify-center row-span-2 flex-col bg-white rounded-md">
               <button @click="increaseVolume"
-                      class="flex items-center justify-center w-10 h-10 cursor-pointer text-2xl">
-                <slot name="icon-plus"/>
+                class="flex items-center justify-center w-10 h-10 cursor-pointer text-2xl">
+                <slot name="icon-plus" />
               </button>
               <button @click="decreaseVolume"
-                      class="flex items-center justify-center w-10 h-10 cursor-pointer text-2xl">
-                <slot name="icon-minus"/>
+                class="flex items-center justify-center w-10 h-10 cursor-pointer text-2xl">
+                <slot name="icon-minus" />
               </button>
             </div>
             <!--channel update-->
             <div class="flex justify-center row-span-2 flex-col bg-white rounded-md">
               <button @click="changeChannelUp"
-                      class="flex items-center justify-center w-10 h-10 cursor-pointer text-2xl">
-                <slot name="icon-up"/>
+                class="flex items-center justify-center w-10 h-10 cursor-pointer text-2xl">
+                <slot name="icon-up" />
               </button>
               <button @click="changeChannelDown"
-                      class="flex items-center justify-center w-10 h-10 cursor-pointer text-2xl">
-                <slot name="icon-down"/>
+                class="flex items-center justify-center w-10 h-10 cursor-pointer text-2xl">
+                <slot name="icon-down" />
               </button>
             </div>
             <!--info modal-->
             <button @click="showInfoModal = true"
-                    class="flex items-center justify-center w-10 h-10 bg-white rounded-md cursor-pointer text-2xl">
-              <slot name="icon-info"/>
+              class="flex items-center justify-center w-10 h-10 bg-white rounded-md cursor-pointer text-2xl">
+              <slot name="icon-info" />
             </button>
             <!-- full screen -->
             <button @click="toggleFullscreen"
-                    class="flex items-center justify-center w-10 h-10 bg-white rounded-md cursor-pointer text-2xl">
-              <span v-if="isFullscreen"><slot name="icon-fullscreen-exit"/></span>
-              <span v-else><slot name="icon-fullscreen"/></span>
+              class="flex items-center justify-center w-10 h-10 bg-white rounded-md cursor-pointer text-2xl">
+              <span v-if="isFullscreen">
+                <slot name="icon-fullscreen-exit" />
+              </span>
+              <span v-else>
+                <slot name="icon-fullscreen" />
+              </span>
             </button>
           </div>
         </div>
@@ -192,16 +199,15 @@ import { ref, onMounted, onBeforeUnmount, watch, computed } from 'vue';
 import ModalDialog from "@components/lab/ui/ModalDialog.vue";
 import type { IPTVChannel } from "@components/lab/iptv/IPTVm3uParser.ts";
 import { parseM3uContent } from "@components/lab/iptv/IPTVm3uParser.ts";
-import videojs from 'video.js';
-import 'video.js/dist/video-js.css';
+import Hls from 'hls.js';
 
 const PLAYLIST_URL = 'https://iptv-org.github.io/iptv/countries/in.m3u';
 const VOLUME_BARS = 20;
 const VOLUME_INTERVAL = 0.05;
 const INDICATOR_DISPLAY_TIME = 3000;
 
-let player: any = null;
-const videoPlayer = ref(null);
+let hls: Hls | null = null;
+const videoPlayer = ref<HTMLVideoElement | null>(null);
 const isPlaying = ref(false);
 const isPlayerLoading = ref(true);
 const isMuted = ref(true);
@@ -229,116 +235,107 @@ const filteredChannels = computed(() => {
 
   const query = channelSearchQuery.value.toLowerCase();
   return IPTVChannels.value.filter(channel =>
-      channel.name.toLowerCase().includes(query) ||
-      (channel.group && channel.group.toLowerCase().includes(query))
+    channel.name.toLowerCase().includes(query) ||
+    (channel.group && channel.group.toLowerCase().includes(query))
   );
 });
 
 const initializePlayer = () => {
-  if (videoPlayer.value) {
-    const options = {
-      controls: false,
-      autoplay: true,
-      muted: true,
-      preload: 'auto',
-      fluid: false,
-      responsive: true,
-      fill: true,
-      liveui: true,
-      suppressNotSupportedError: true,
-      userActions: {
-        hotkeys: false,
-        doubleClick: false
-      },
-      errorDisplay: false,
-    };
+  const video = videoPlayer.value;
+  if (!video) return;
 
-    player = videojs(videoPlayer.value, options);
+  video.addEventListener('play', () => {
+    isPlaying.value = true;
+  });
 
-    player.ready(() => {
-      player.on('play', () => {
-        isPlaying.value = true;
-      });
+  video.addEventListener('pause', () => {
+    isPlaying.value = false;
+  });
 
-      player.on('pause', () => {
-        isPlaying.value = false;
-      });
+  video.addEventListener('ended', () => {
+    isPlaying.value = false;
+  });
 
-      player.on('ended', () => {
-        isPlaying.value = false;
-      });
+  video.addEventListener('loadstart', () => {
+    isPlayerLoading.value = true;
+  });
 
-      player.on('loadstart', () => {
-        isPlayerLoading.value = true;
-      });
+  video.addEventListener('loadeddata', () => {
+    isPlayerLoading.value = false;
+  });
 
-      player.on('loadeddata', () => {
-        isPlayerLoading.value = false;
-      });
+  video.addEventListener('waiting', () => {
+    isPlayerLoading.value = true;
+  });
 
-      player.on('error', () => {
-        isPlayerLoading.value = false;
-      });
+  video.addEventListener('playing', () => {
+    isPlayerLoading.value = false;
+  });
 
-      isMuted.value = player.muted();
-      volume.value = player.volume();
+  video.addEventListener('error', () => {
+    isPlayerLoading.value = false;
+  });
 
-      player.on('volumechange', () => {
-        isMuted.value = player.muted();
-        volume.value = player.volume();
-      });
+  video.addEventListener('volumechange', () => {
+    isMuted.value = video.muted;
+    volume.value = video.volume;
+  });
 
-      if (IPTVChannels.value.length > 0) {
-        loadFirstChannel();
-      }
-    });
+  isMuted.value = video.muted;
+  volume.value = video.volume;
+
+  if (IPTVChannels.value.length > 0) {
+    loadFirstChannel();
   }
 };
 
 const togglePlayPause = () => {
-  if (!player) return;
+  const video = videoPlayer.value;
+  if (!video) return;
 
-  if (isPlaying.value) {
-    player.pause();
+  if (video.paused) {
+    video.play().catch(() => { });
   } else {
-    player.play();
+    video.pause();
   }
-  isPlaying.value = !isPlaying.value;
 };
 
 const toggleMute = () => {
-  if (!player) return;
+  const video = videoPlayer.value;
+  if (!video) return;
 
-  player.muted(!isMuted.value);
-  isMuted.value = !isMuted.value;
+  video.muted = !video.muted;
+  isMuted.value = video.muted;
 };
 
 const increaseVolume = () => {
-  if (!player) return;
+  const video = videoPlayer.value;
+  if (!video) return;
 
   const newVolume = Math.min(volume.value + VOLUME_INTERVAL, 1.0);
   volume.value = newVolume;
-  player.volume(newVolume);
+  video.volume = newVolume;
 
   showVolumeIndicatorTimer();
 
-  if (isMuted.value) {
-    player.muted(false);
+  if (video.muted) {
+    video.muted = false;
     isMuted.value = false;
   }
 };
 
 const decreaseVolume = () => {
-  if (!player) return;
+  const video = videoPlayer.value;
+  if (!video) return;
 
   const newVolume = Math.max(volume.value - VOLUME_INTERVAL, 0.0);
   volume.value = newVolume;
-  player.volume(newVolume);
+  video.volume = newVolume;
 
   showVolumeIndicatorTimer();
 
   if (newVolume <= 0.0) {
-    player.muted(true);
+    video.muted = true;
     isMuted.value = true;
   }
 };
@@ -411,27 +408,15 @@ const toggleFullscreen = () => {
 
 const handleFullscreenChange = () => {
   isFullscreen.value = !!(
-      document.fullscreenElement ||
-      document.webkitFullscreenElement ||
-      document.msFullscreenElement
+    document.fullscreenElement ||
+    document.webkitFullscreenElement ||
+    document.msFullscreenElement
   );
-};
-
-const getSourceType = (url: string): string => {
-  if (url.includes('.m3u8')) {
-    return 'application/x-mpegURL';
-  } else if (url.includes('.mp4')) {
-    return 'video/mp4';
-  } else if (url.includes('.webm')) {
-    return 'video/webm';
-  } else {
-    return 'video/mp4';
-  }
 };
 
 const handleKeydown = (event: KeyboardEvent) => {
   if (event.target instanceof HTMLInputElement ||
-      event.target instanceof HTMLTextAreaElement) {
+    event.target instanceof HTMLTextAreaElement) {
     return;
   }
 
@@ -496,17 +481,52 @@ const loadPlaylist = async () => {
 };
 
 const handleChannelSelect = (channel: IPTVChannel) => {
-  if (player && channel.url) {
+  const video = videoPlayer.value;
+  if (video && channel.url) {
     isPlayerLoading.value = true;
-    player.src({
-      src: channel.url,
-      type: getSourceType(channel.url)
-    });
-    player.play();
-    isPlaying.value = true;
+
+    if (hls) {
+      hls.destroy();
+      hls = null;
+    }
+
+    if (channel.url.includes('.m3u8')) {
+      if (Hls.isSupported()) {
+        hls = new Hls({
+          enableWorker: true,
+          lowLatencyMode: true,
+        });
+        hls.attachMedia(video);
+        hls.on(Hls.Events.MEDIA_ATTACHED, () => {
+          hls?.loadSource(channel.url);
+        });
+        hls.on(Hls.Events.ERROR, (_event, data) => {
+          if (data.fatal) {
+            isPlayerLoading.value = false;
+            switch (data.type) {
+              case Hls.ErrorTypes.NETWORK_ERROR:
+                hls?.startLoad();
+                break;
+              case Hls.ErrorTypes.MEDIA_ERROR:
+                hls?.recoverMediaError();
+                break;
+              default:
+                hls?.destroy();
+                hls = null;
+                break;
+            }
+          }
+        });
+      } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
+        video.src = channel.url;
+      }
+    } else {
+      video.src = channel.url;
+    }
+
+    video.play().catch(() => { });
 
     currentChannelIndex.value = IPTVChannels.value.findIndex(ch => ch.url === channel.url);
-
     currentChannelName.value = channel.name;
     showChannelNameIndicatorTimer();
   }
@@ -514,19 +534,20 @@ const handleChannelSelect = (channel: IPTVChannel) => {
 };
 
 const loadFirstChannel = () => {
-  if (IPTVChannels.value.length > 0 && player) {
+  if (IPTVChannels.value.length > 0 && videoPlayer.value) {
     // showing 9xm channel default :)
     const nineXmChannelIndex = IPTVChannels.value.findIndex(channel => channel.name.includes('9XM'));
-    currentChannelIndex.value = nineXmChannelIndex ?? 0;
-    handleChannelSelect(IPTVChannels.value[nineXmChannelIndex] ?? IPTVChannels.value[0]);
+    const targetIndex = nineXmChannelIndex !== -1 ? nineXmChannelIndex : 0;
+    currentChannelIndex.value = targetIndex;
+    handleChannelSelect(IPTVChannels.value[targetIndex]);
   }
 };
 
 watch(IPTVChannels, (newChannels) => {
-  if (newChannels.length > 0 && player) {
+  if (newChannels.length > 0 && videoPlayer.value) {
     loadFirstChannel();
   }
-}, {immediate: false});
+}, { immediate: false });
 
 onMounted(() => {
   loadPlaylist();
@@ -538,9 +559,15 @@ onMounted(() => {
 });
 
 onBeforeUnmount(() => {
-  if (player) {
-    player.dispose();
-    player = null;
+  if (hls) {
+    hls.destroy();
+    hls = null;
+  }
+
+  if (videoPlayer.value) {
+    videoPlayer.value.pause();
+    videoPlayer.value.removeAttribute('src');
+    videoPlayer.value.load();
   }
 
   if (volumeIndicatorTimer !== null) {
@@ -557,6 +584,5 @@ onBeforeUnmount(() => {
   document.removeEventListener('webkitfullscreenchange', handleFullscreenChange);
   document.removeEventListener('msfullscreenchange', handleFullscreenChange);
   document.removeEventListener('keydown', handleKeydown);
-
 });
 </script>
