@@ -29,3 +29,6 @@ pnpm-debug.log*
 # Lab build artifacts (compiled by Vite into blog public dir)
 apps/blog/public/labs/
 
+# Turborepo
+.turbo
+**/turbo-build.log
