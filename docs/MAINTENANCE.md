@@ -5,10 +5,10 @@
 | Command | Description |
 | :--- | :--- |
 | `npm run dev` | Run only the Astro blog via Turborepo → `http://localhost:4321`. |
-| `npm run dev:<lab>` | Run one lab standalone → `http://localhost:5173` with Vite HMR. |
-| `npm run dev:watch --workspace=labs/<lab>` | Build/watch one selected lab for embedding in the blog. |
+| `npm run dev:<lab>` | Run one lab as a standalone page → `http://localhost:5173` with Vite HMR. |
+| `npm run watch:<lab>` | Build/watch one lab for embedding in the blog. |
 | `npm run build` | Topological production build (all labs, then blog). |
-| `npm run clean` | Clear all build artifacts and caches. |
+| `npm run clean` | Clear workspace build outputs and the `.turbo` cache (does not remove `node_modules`). |
 
 ---
 
@@ -53,8 +53,7 @@ The fastest feedback loop for lab development is standalone mode:
 npm run dev:<lab>
 ```
 
-This serves `labs/<lab>/index.html` on `http://localhost:5173` with instant hot module replacement.
-It is a standalone page and does not supply the compiled bundle used by the Astro embed.
+For example, `npm run dev:iptv` serves `labs/iptv/index.html` on `http://localhost:5173` with instant hot module replacement. It is a standalone page and does not supply the compiled bundle used by the Astro embed.
 
 ### Integrated Blog Development
 
@@ -62,13 +61,13 @@ The root `dev` command starts only Astro. To work on one lab inside its blog pag
 
 ```bash
 # Terminal 1: Watch-build the lab (continuous output to public/labs/)
-npm run dev:watch --workspace=labs/<lab>
+npm run watch:<lab>
 
 # Terminal 2: Start only the Astro blog
 npm run dev
 ```
 
-The watch build continuously rebuilds `bundle.js` and `style.css` into `apps/blog/public/labs/<lab>/`. Astro's dev server picks up the new files on each page load.
+For example, use `npm run watch:iptv` to continuously rebuild `bundle.js` and `style.css` into `apps/blog/public/labs/iptv/`. Astro's dev server picks up the new files on each page load.
 
 After `npm run clean`, the generated lab files are removed. Start the selected lab's watch build to regenerate them before opening its embedded page. Other labs stay unbuilt until selected.
 
@@ -110,11 +109,11 @@ npm install -D <package>
 
 ### Issue: Lab changes are not appearing in the blog
 **Cause**: Astro loads `/labs/<lab>/bundle.js` from `apps/blog/public/labs/`.
-**Fix**: In a second terminal, run `npm run dev:watch --workspace=labs/<lab>` to continuously write updated bundles into `public/labs/`.
+**Fix**: In a second terminal, run `npm run watch:<lab>` to continuously write updated bundles into `public/labs/`.
 
 ### Issue: An embedded lab shows "This lab is unavailable"
 **Cause**: Its generated bundle is missing, for example after `npm run clean`.
-**Fix**: Start `npm run dev:watch --workspace=labs/<lab>` in another terminal, then reload the blog page.
+**Fix**: Start `npm run watch:<lab>` in another terminal, then reload the blog page.
 
 ### Issue: `npm run build` fails with missing lab bundles
 **Cause**: Turborepo may be serving a stale cache.

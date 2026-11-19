@@ -66,7 +66,7 @@ Labs are embedded into blog pages using the **Client Mount Pattern**: each lab b
 
 - `npm run dev` starts only the Astro blog through Turbo.
 - `npm run dev:<lab>` starts one lab as a standalone Vite app; it does not feed the embedded blog route.
-- To show one selected lab inside Astro, run `npm run dev:watch --workspace=labs/<lab>` in another terminal. This writes that lab's bundle and stylesheet into `apps/blog/public/labs/<lab>/`.
+- To show one selected lab inside Astro, run `npm run watch:<lab>` in another terminal. This writes that lab's bundle and stylesheet into `apps/blog/public/labs/<lab>/`.
 - `npm run build` builds all labs and the blog. `npm run clean` removes generated lab bundles, so after cleaning, start a selected lab's watch build before opening its embedded route.
 
 ### `turbo.json`

@@ -6,7 +6,8 @@
     "dev": "astro dev",
     "build": "astro build",
     "preview": "astro preview",
-    "astro": "astro"
+    "astro": "astro",
+    "clean": "rm -rf dist public/labs"
   },
   "dependencies": {
     "@astrojs/mdx": "^8.1.6",

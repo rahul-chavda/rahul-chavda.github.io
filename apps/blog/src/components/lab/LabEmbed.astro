@@ -3,13 +3,14 @@ interface Props {
   slug: string;
   props?: Record<string, any>;
   height?: string;
+  class?: string;
 }
 
-const { slug, props = {}, height = "600px" } = Astro.props;
+const { slug, props = {}, height = "600px", class: className = "" } = Astro.props;
 const serializedProps = JSON.stringify(props);
 ---
 
-<div data-lab-embed class="lab-embed-wrapper relative w-full overflow-hidden" style={`height: ${height};`}>
+<div data-lab-embed class:list={["lab-embed-wrapper", "relative", "w-full", "overflow-hidden", className]} style={`height: ${height};`}>
   <!-- Scoped lab stylesheet -->
   <link rel="stylesheet" href={`/labs/${slug}/style.css`} />
 
@@ -23,7 +24,7 @@ const serializedProps = JSON.stringify(props);
     >
       <p class="font-semibold">This lab is unavailable.</p>
       <p>To show it in the local blog, run this in another terminal and reload:</p>
-      <code class="rounded bg-white px-2 py-1">npm run dev:watch --workspace=labs/{slug}</code>
+      <code class="rounded bg-white px-2 py-1">{`npm run watch:${slug}`}</code>
     </div>
   </div>
 

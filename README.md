@@ -17,12 +17,12 @@ npm run build
 | Command | Description |
 | :--- | :--- |
 | `npm run dev` | Run only the Astro blog → `http://localhost:4321` |
-| `npm run dev:<lab>` | Run one lab standalone → `http://localhost:5173` |
-| `npm run dev:watch --workspace=labs/<lab>` | Build/watch one selected lab for embedding in the blog |
+| `npm run dev:<lab>` | Run one lab as a standalone page → `http://localhost:5173` |
+| `npm run watch:<lab>` | Build/watch one lab for embedding in the blog |
 | `npm run build` | Topological production build |
-| `npm run clean` | Clear all build artifacts and caches |
+| `npm run clean` | Clear workspace build outputs and the `.turbo` cache |
 
-To see one lab inside the blog during development, start its watch build in one terminal and the blog in another. Standalone `dev:<lab>` serves the lab separately and does not populate the blog embed.
+For example, use `npm run watch:iptv` and `npm run dev` in separate terminals to work on the IPTV lab inside the blog. `npm run dev:iptv` opens the lab standalone and does not populate the blog embed.
 
 ## Documentation
 

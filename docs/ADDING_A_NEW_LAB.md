@@ -257,13 +257,14 @@ import LabEmbed from '@components/lab/LabEmbed.astro';
 
 ## Step 8: Register Dev Script in Root `package.json`
 
-Add a convenience script to the root `package.json`:
+Add both commands to the root `package.json`, replacing `<name>` with the new lab's name:
 
 ```json
-"dev:<name>": "npm run dev --workspace=labs/<name>"
+"dev:<name>": "turbo run dev --filter=@labs/<name>",
+"watch:<name>": "turbo run dev:watch --filter=@labs/<name>"
 ```
 
-This script runs the lab standalone. To develop the lab embedded in the blog, use `npm run dev:watch --workspace=labs/<name>` in one terminal and `npm run dev` in another. The blog dev command does not start or build labs automatically.
+Use `npm run dev:<name>` for the standalone lab page. To develop it embedded in the blog, run `npm run watch:<name>` and `npm run dev` in separate terminals. The blog dev command does not start or build labs automatically.
 
 ---
 
@@ -294,5 +295,5 @@ npm run build
 - [ ] `labs/<name>/src/main.ts` handles mount/unmount with Astro lifecycle hooks.
 - [ ] `labs/<name>/index.html` standalone dev entry with preflight.
 - [ ] `apps/blog/src/pages/lab/<name>.astro` shell page created.
-- [ ] Root `package.json` has `dev:<name>` script.
+- [ ] Root `package.json` has `dev:<name>` and `watch:<name>` scripts.
 - [ ] `npm run build` succeeds with the new lab.

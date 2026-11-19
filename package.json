@@ -9,13 +9,14 @@
   ],
   "scripts": {
     "dev": "turbo run dev --filter=blog",
-    "dev:iptv": "npm run dev --workspace=labs/iptv",
-    "dev:globe": "npm run dev --workspace=labs/globe",
+    "watch:iptv": "turbo run dev:watch --filter=@labs/iptv",
+    "watch:globe": "turbo run dev:watch --filter=@labs/globe",
+    "dev:iptv": "turbo run dev --filter=@labs/iptv",
+    "dev:globe": "turbo run dev --filter=@labs/globe",
     "build": "turbo run build",
-    "clean": "turbo run clean && rm -rf apps/blog/dist apps/blog/public/labs"
+    "clean": "turbo run clean && rm -rf .turbo"
   },
   "devDependencies": {
-    "turbo": "^2.4.0",
-    "typescript": "^5.8.0"
+    "turbo": "^2.4.0"
   }
 }
