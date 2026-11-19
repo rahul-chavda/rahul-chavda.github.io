@@ -13,7 +13,7 @@
     "dev:iptv": "npm run dev --workspace=labs/iptv",
     "dev:globe": "npm run dev --workspace=labs/globe",
     "build": "turbo run build",
-    "clean": "turbo run clean && apps/blog/dist apps/blog/public/labs"
+    "clean": "turbo run clean && rm -rf apps/blog/dist apps/blog/public/labs"
   },
   "devDependencies": {
     "turbo": "^2.4.0",

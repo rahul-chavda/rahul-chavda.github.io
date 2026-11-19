@@ -68,7 +68,8 @@ import { resolve } from 'path';
 // import react from '@vitejs/plugin-react';    // if React
 // import { svelte } from '@sveltejs/vite-plugin-svelte'; // if Svelte
 
-export default defineConfig({
+export default defineConfig(({ command }) => ({
+  base: command === 'build' ? '/labs/<name>/' : '/',
   plugins: [
     tailwindcss(),
     // vue(),     // add your framework plugin here
@@ -90,10 +91,11 @@ export default defineConfig({
       }
     }
   }
-});
+}));
 ```
 
 **Key points:**
+- `base` uses `/` during standalone development and `/labs/<name>/` for production builds, so imported assets work in both modes.
 - `outDir` writes built assets directly into the blog's `public/labs/<name>/` directory.
 - `entryFileNames: 'bundle.js'` ensures a stable filename for the `<LabEmbed>` component to reference.
 - CSS is output as `style.css` (not hashed) for the same reason.

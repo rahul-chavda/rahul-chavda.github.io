@@ -3,8 +3,8 @@ import vue from '@vitejs/plugin-vue';
 import tailwindcss from '@tailwindcss/vite';
 import { resolve } from 'path';
 
-export default defineConfig({
-  base: './',
+export default defineConfig(({ command }) => ({
+  base: command === 'build' ? '/labs/globe/' : '/',
   plugins: [vue(), tailwindcss()],
   build: {
     outDir: resolve(__dirname, '../../apps/blog/public/labs/globe'),
@@ -23,4 +23,4 @@ export default defineConfig({
       }
     }
   }
-});
+}));
