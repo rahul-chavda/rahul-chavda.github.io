@@ -9,13 +9,39 @@ const { slug, props = {}, height = "600px" } = Astro.props;
 const serializedProps = JSON.stringify(props);
 ---
 
-<div class="lab-embed-wrapper relative w-full overflow-hidden" style={`height: ${height};`}>
+<div data-lab-embed class="lab-embed-wrapper relative w-full overflow-hidden" style={`height: ${height};`}>
   <!-- Scoped lab stylesheet -->
   <link rel="stylesheet" href={`/labs/${slug}/style.css`} />
 
   <!-- Mount target with custom props -->
-  <div data-lab-root={slug} data-props={serializedProps} class="relative h-full w-full"></div>
+  <div data-lab-root={slug} data-props={serializedProps} class="relative h-full w-full">
+    <div
+      data-lab-fallback
+      hidden
+      role="alert"
+      class="flex h-full w-full flex-col items-center justify-center gap-2 bg-stone-100 p-6 text-center text-stone-700"
+    >
+      <p class="font-semibold">This lab is unavailable.</p>
+      <p>To show it in the local blog, run this in another terminal and reload:</p>
+      <code class="rounded bg-white px-2 py-1">npm run dev:watch --workspace=labs/{slug}</code>
+    </div>
+  </div>
+
+<script>
+  document.addEventListener(
+    'error',
+    (event) => {
+      const script = event.target;
+      if (!(script instanceof HTMLScriptElement) || !script.hasAttribute('data-lab-bundle')) return;
+
+      const embed = script.closest('[data-lab-embed]');
+      const fallback = embed?.querySelector('[data-lab-fallback]');
+      if (fallback instanceof HTMLElement) fallback.hidden = false;
+    },
+    true,
+  );
+</script>
 
   <!-- Lab client bundle -->
-  <script type="module" src={`/labs/${slug}/bundle.js`}></script>
+  <script type="module" data-lab-bundle src={`/labs/${slug}/bundle.js`}></script>
 </div>

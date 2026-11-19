@@ -16,11 +16,13 @@ npm run build
 
 | Command | Description |
 | :--- | :--- |
-| `npm run dev` | Launch all dev servers in parallel (Turborepo) |
-| `npm run dev:blog` | Astro blog only → `http://localhost:4321` |
-| `npm run dev:<lab>` | lab standalone → `http://localhost:5173` |
+| `npm run dev` | Run only the Astro blog → `http://localhost:4321` |
+| `npm run dev:<lab>` | Run one lab standalone → `http://localhost:5173` |
+| `npm run dev:watch --workspace=labs/<lab>` | Build/watch one selected lab for embedding in the blog |
 | `npm run build` | Topological production build |
 | `npm run clean` | Clear all build artifacts and caches |
+
+To see one lab inside the blog during development, start its watch build in one terminal and the blog in another. Standalone `dev:<lab>` serves the lab separately and does not populate the blog embed.
 
 ## Documentation
 

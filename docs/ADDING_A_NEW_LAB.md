@@ -263,6 +263,8 @@ Add a convenience script to the root `package.json`:
 "dev:<name>": "npm run dev --workspace=labs/<name>"
 ```
 
+This script runs the lab standalone. To develop the lab embedded in the blog, use `npm run dev:watch --workspace=labs/<name>` in one terminal and `npm run dev` in another. The blog dev command does not start or build labs automatically.
+
 ---
 
 ## Step 9: Install Dependencies & Verify

@@ -8,8 +8,7 @@
     "labs/*"
   ],
   "scripts": {
-    "dev": "turbo run dev --parallel",
-    "dev:blog": "npm run dev --workspace=apps/blog",
+    "dev": "turbo run dev --filter=blog",
     "dev:iptv": "npm run dev --workspace=labs/iptv",
     "dev:globe": "npm run dev --workspace=labs/globe",
     "build": "turbo run build",

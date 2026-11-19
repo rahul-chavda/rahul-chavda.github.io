@@ -4,9 +4,9 @@
 
 | Command | Description |
 | :--- | :--- |
-| `npm run dev` | Launch all dev servers in parallel (Turborepo). |
-| `npm run dev:blog` | Astro blog only → `http://localhost:4321`. |
-| `npm run dev:<lab>` | Lab standalone → `http://localhost:5173` with Vite HMR. |
+| `npm run dev` | Run only the Astro blog via Turborepo → `http://localhost:4321`. |
+| `npm run dev:<lab>` | Run one lab standalone → `http://localhost:5173` with Vite HMR. |
+| `npm run dev:watch --workspace=labs/<lab>` | Build/watch one selected lab for embedding in the blog. |
 | `npm run build` | Topological production build (all labs, then blog). |
 | `npm run clean` | Clear all build artifacts and caches. |
 
@@ -54,30 +54,25 @@ npm run dev:<lab>
 ```
 
 This serves `labs/<lab>/index.html` on `http://localhost:5173` with instant hot module replacement.
+It is a standalone page and does not supply the compiled bundle used by the Astro embed.
 
 ### Integrated Blog Development
 
-To test a lab embedded within the full Astro blog:
+The root `dev` command starts only Astro. To work on one lab inside its blog page, build/watch that lab separately:
 
 ```bash
 # Terminal 1: Watch-build the lab (continuous output to public/labs/)
 npm run dev:watch --workspace=labs/<lab>
 
-# Terminal 2: Run the Astro blog dev server
-npm run dev:blog
+# Terminal 2: Start only the Astro blog
+npm run dev
 ```
 
 The watch build continuously rebuilds `bundle.js` and `style.css` into `apps/blog/public/labs/<lab>/`. Astro's dev server picks up the new files on each page load.
 
-### Full Parallel Dev
+After `npm run clean`, the generated lab files are removed. Start the selected lab's watch build to regenerate them before opening its embedded page. Other labs stay unbuilt until selected.
 
-To run everything in parallel (all labs + blog):
-
-```bash
-npm run dev
-```
-
-This uses Turborepo's `--parallel` flag to launch all workspace dev servers simultaneously.
+`npm run build` remains the command that builds every lab and the blog for production.
 
 ---
 
@@ -113,9 +108,13 @@ npm install -D <package>
 **Cause**: The lab bundle uses lean Tailwind v4 without Preflight.
 **Fix**: Ensure `labs/<lab>/index.html` contains `@import "tailwindcss/preflight";` inside its `<style>` tag.
 
-### Issue: Lab changes are not appearing in `dev:blog`
+### Issue: Lab changes are not appearing in the blog
 **Cause**: Astro loads `/labs/<lab>/bundle.js` from `apps/blog/public/labs/`.
 **Fix**: In a second terminal, run `npm run dev:watch --workspace=labs/<lab>` to continuously write updated bundles into `public/labs/`.
+
+### Issue: An embedded lab shows "This lab is unavailable"
+**Cause**: Its generated bundle is missing, for example after `npm run clean`.
+**Fix**: Start `npm run dev:watch --workspace=labs/<lab>` in another terminal, then reload the blog page.
 
 ### Issue: `npm run build` fails with missing lab bundles
 **Cause**: Turborepo may be serving a stale cache.
