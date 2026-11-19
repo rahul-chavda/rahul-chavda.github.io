@@ -56,6 +56,11 @@ onBeforeUnmount(() => {
   <div class="relative w-full h-full">
     <canvas ref="sceneCanvas" class="w-full h-full"></canvas>
 
+    <a href="/lab" class="absolute top-6 left-6 z-40 flex items-center gap-2 rounded bg-white p-2 text-black">
+      <Icon icon="mdi:arrow-left" />
+      <span>lab</span>
+    </a>
+
     <div class="absolute bottom-0 right-0 text-white text-xs p-4 flex items-center gap-2">
       <Icon icon="mdi:info" class="text-xl" />
       Click marker for more info.

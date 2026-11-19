@@ -3,23 +3,18 @@ interface Props {
   slug: string;
   props?: Record<string, any>;
   height?: string;
-  class?: string;
 }
 
-const { slug, props = {}, height = "600px", class: className = "" } = Astro.props;
+const { slug, props = {}, height = "600px" } = Astro.props;
 const serializedProps = JSON.stringify(props);
 ---
 
-<div class={`lab-embed-wrapper relative w-full rounded-xl overflow-hidden shadow-lg ${className}`} style={`height: ${height};`}>
+<div class="lab-embed-wrapper relative w-full overflow-hidden" style={`height: ${height};`}>
   <!-- Scoped lab stylesheet -->
   <link rel="stylesheet" href={`/labs/${slug}/style.css`} />
 
   <!-- Mount target with custom props -->
-  <div 
-    data-lab-root={slug} 
-    data-props={serializedProps} 
-    class="w-full h-full relative"
-  ></div>
+  <div data-lab-root={slug} data-props={serializedProps} class="relative h-full w-full"></div>
 
   <!-- Lab client bundle -->
   <script type="module" src={`/labs/${slug}/bundle.js`}></script>

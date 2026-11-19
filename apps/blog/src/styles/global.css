@@ -3,6 +3,7 @@
 @source "../pages";
 @source "../layouts";
 @source "../components/layout";
+@source "../components/lab";
 @source "../content";
 
 body {
