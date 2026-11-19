@@ -23,5 +23,9 @@ pnpm-debug.log*
 # jetbrains setting folder
 .idea/
 
-#vscode seeting folder
+# vscode setting folder
 .vscode/
+
+# Lab build artifacts (compiled by Vite into blog public dir)
+apps/blog/public/labs/
+
