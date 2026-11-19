@@ -21,7 +21,8 @@ import {
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 
 import { Raycaster, Vector2 } from "three";
-import type { Wonder } from "@components/lab/globe/Wonders.ts";
+import type { Wonder } from "./Wonders";
+import worldMapUrl from "./assets/globe.png";
 
 export class GlobeVisualisation {
   // Constants
@@ -29,7 +30,7 @@ export class GlobeVisualisation {
   private readonly GLOBE_SEGMENTS = 64;
   private readonly ROWS = 180;
   private readonly DOT_DENSITY = 15.0;
-  private readonly WORLD_MAP_URL = '/resources/globe.png';
+  private readonly WORLD_MAP_URL = worldMapUrl;
 
   private readonly BACKGROUND_COLOR = 0x06122e;
   private readonly AMBIENT_LIGHT_COLOR = 0x707070;

@@ -1,10 +1,11 @@
 <script setup lang="ts">
 import { ref, onMounted, onBeforeUnmount, reactive } from 'vue';
 import { type Ref } from 'vue';
-import { GlobeVisualisation } from "./GlobeVisualisation.ts";
-import { Wonders } from "@components/lab/globe/Wonders.ts";
-import type { Wonder } from "@components/lab/globe/Wonders.ts";
-import ModalDialog from "@components/lab/ui/ModalDialog.vue";
+import { GlobeVisualisation } from "./GlobeVisualisation";
+import { Wonders } from "./Wonders";
+import type { Wonder } from "./Wonders";
+import ModalDialog from "./ModalDialog.vue";
+import { Icon } from '@iconify/vue';
 
 const sceneCanvas: Ref<HTMLCanvasElement | null> = ref(null);
 
@@ -56,7 +57,7 @@ onBeforeUnmount(() => {
     <canvas ref="sceneCanvas" class="w-full h-full"></canvas>
 
     <div class="absolute bottom-0 right-0 text-white text-xs p-4 flex items-center gap-2">
-      <slot name="icon-info" />
+      <Icon icon="mdi:info" class="text-xl" />
       Click marker for more info.
     </div>
     <ModalDialog v-model="wonderInfo.isVisible" :max-width="'md'" :theme="'dark'">
@@ -82,7 +83,7 @@ onBeforeUnmount(() => {
             </span>
           <a :href="'https://www.openstreetmap.org/?#map=16/'+wonderInfo.currentWonder.latitude+'/'+wonderInfo.currentWonder.longitude"
              target="_blank" class="text-2xl text-blue-600">
-            <slot name="icon-location"/>
+            <Icon icon="mdi:directions" class="text-xl" />
           </a>
         </div>
       </template>
