@@ -5,7 +5,8 @@
     <div v-if="!isPlaying" class="absolute inset-0 w-full h-full z-10 bg-black"></div>
 
     <div v-if="isPlayerLoading && isPlaying"
-      class="absolute inset-0 w-full h-full z-10 bg-black/70 flex items-center justify-center bg-[url(/resources/static.gif)] bg-repeat bg-size=[200px]">
+      :style="{ backgroundImage: `url(${staticNoiseUrl})` }"
+      class="absolute inset-0 w-full h-full z-10 bg-black/70 flex items-center justify-center bg-repeat bg-size=[200px]">
     </div>
 
     <div v-if="showChannelNameIndicator" class="absolute top-8 left-8 z-20 transition-opacity duration-300"
@@ -128,63 +129,65 @@
         <div class="bg-gray-900/80 p-4 rounded-2xl shadow-lg">
           <div class="grid grid-cols-2 gap-3">
             <a href="/lab" class="flex items-center justify-center w-10 h-10 text-white rounded text-2xl">
-              <slot name="icon-back" />
+              <Icon icon="mdi:arrow-back" />
             </a>
             <!-- on/off button -->
             <button @click="togglePlayPause"
               class="flex items-center justify-center w-10 h-10 bg-red-500 rounded-full cursor-pointer">
-              <slot name="icon-on-off" />
+              <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#ffffff">
+                <path d="M480-480q-17 0-28.5-11.5T440-520v-320q0-17 11.5-28.5T480-880q17 0 28.5 11.5T520-840v320q0 17-11.5 28.5T480-480Zm0 360q-75 0-140.5-28.5t-114-77q-48.5-48.5-77-114T120-480q0-61 20-118.5T198-704q11-14 28-13.5t30 13.5q11 11 10 27t-11 30q-27 36-41 79t-14 88q0 117 81.5 198.5T480-200q117 0 198.5-81.5T760-480q0-46-13.5-89.5T704-649q-10-13-11-28.5t10-26.5q12-12 29-12.5t28 12.5q39 48 59.5 105T840-480q0 75-28.5 140.5t-77 114q-48.5 48.5-114 77T480-120Z"/>
+              </svg>
             </button>
             <!--channel list-->
             <button @click="showChannelListModal = true"
               class="flex items-center justify-center w-10 h-10 bg-white rounded-md cursor-pointer text-2xl">
-              <slot name="icon-book" />
+              <Icon icon="mdi:book-open-blank-variant-outline" />
             </button>
             <!--mute/unmute button-->
             <button @click="toggleMute"
               class="flex items-center justify-center w-10 h-10 bg-white rounded-md cursor-pointer text-2xl">
               <span v-if="isMuted" class="text-red-500">
-                <slot name="icon-volume-mute" />
+                <Icon icon="mdi:mute" />
               </span>
               <span v-else>
-                <slot name="icon-volume-high" />
+                <Icon icon="mdi:volume-high" />
               </span>
             </button>
             <!-- volume up/down -->
             <div class="flex justify-center row-span-2 flex-col bg-white rounded-md">
               <button @click="increaseVolume"
                 class="flex items-center justify-center w-10 h-10 cursor-pointer text-2xl">
-                <slot name="icon-plus" />
+                <Icon icon="mdi:plus" />
               </button>
               <button @click="decreaseVolume"
                 class="flex items-center justify-center w-10 h-10 cursor-pointer text-2xl">
-                <slot name="icon-minus" />
+                <Icon icon="mdi:minus" />
               </button>
             </div>
             <!--channel update-->
             <div class="flex justify-center row-span-2 flex-col bg-white rounded-md">
               <button @click="changeChannelUp"
                 class="flex items-center justify-center w-10 h-10 cursor-pointer text-2xl">
-                <slot name="icon-up" />
+                <Icon icon="mdi:chevron-up" />
               </button>
               <button @click="changeChannelDown"
                 class="flex items-center justify-center w-10 h-10 cursor-pointer text-2xl">
-                <slot name="icon-down" />
+                <Icon icon="mdi:chevron-down" />
               </button>
             </div>
             <!--info modal-->
             <button @click="showInfoModal = true"
               class="flex items-center justify-center w-10 h-10 bg-white rounded-md cursor-pointer text-2xl">
-              <slot name="icon-info" />
+              <Icon icon="mdi:information-outline" />
             </button>
             <!-- full screen -->
             <button @click="toggleFullscreen"
               class="flex items-center justify-center w-10 h-10 bg-white rounded-md cursor-pointer text-2xl">
               <span v-if="isFullscreen">
-                <slot name="icon-fullscreen-exit" />
+                <Icon icon="mdi:fullscreen-exit" />
               </span>
               <span v-else>
-                <slot name="icon-fullscreen" />
+                <Icon icon="mdi:fullscreen" />
               </span>
             </button>
           </div>
@@ -196,9 +199,11 @@
 
 <script setup lang="ts">
 import { ref, onMounted, onBeforeUnmount, watch, computed } from 'vue';
-import ModalDialog from "@components/lab/ui/ModalDialog.vue";
-import type { IPTVChannel } from "@components/lab/iptv/IPTVm3uParser.ts";
-import { parseM3uContent } from "@components/lab/iptv/IPTVm3uParser.ts";
+import { Icon } from '@iconify/vue';
+import ModalDialog from './ModalDialog.vue';
+import type { IPTVChannel } from './IPTVm3uParser';
+import { parseM3uContent } from './IPTVm3uParser';
+import staticNoiseUrl from './assets/static.gif';
 import Hls from 'hls.js';
 
 const PLAYLIST_URL = 'https://iptv-org.github.io/iptv/countries/in.m3u';
