@@ -1,0 +1,97 @@
+<script setup lang="ts">
+import { ref, onMounted, onBeforeUnmount, reactive } from 'vue';
+import { type Ref } from 'vue';
+import { GlobeVisualisation } from "./GlobeVisualisation";
+import { Wonders } from "./Wonders";
+import type { Wonder } from "./Wonders";
+import ModalDialog from "./ModalDialog.vue";
+import { Icon } from '@iconify/vue';
+
+const sceneCanvas: Ref<HTMLCanvasElement | null> = ref(null);
+
+let globeVisualisation: GlobeVisualisation;
+
+const wonderInfo = reactive({
+  isVisible: false,
+  currentWonder: null as Wonder | null
+});
+
+const showWonderDetails = (wonder: Wonder) => {
+  wonderInfo.currentWonder = wonder;
+  wonderInfo.isVisible = true;
+};
+
+const hideWonderDetails = () => {
+  wonderInfo.isVisible = false;
+  setTimeout(() => {
+    if (!wonderInfo.isVisible) {
+      wonderInfo.currentWonder = null;
+    }
+  }, 300);
+};
+
+const formatCoordinates = (lat: number, lon: number): string => {
+  const latDir = lat >= 0 ? 'N' : 'S';
+  const lonDir = lon >= 0 ? 'E' : 'W';
+
+  return `${Math.abs(lat).toFixed(4)}° ${latDir}, ${Math.abs(lon).toFixed(4)}° ${lonDir}`;
+};
+
+
+onMounted(() => {
+  globeVisualisation = new GlobeVisualisation(sceneCanvas.value!, Wonders);
+  globeVisualisation.init();
+
+  globeVisualisation.onWonderSelected = showWonderDetails;
+  globeVisualisation.onWonderDeselected = hideWonderDetails;
+});
+
+onBeforeUnmount(() => {
+  globeVisualisation.dispose();
+});
+
+</script>
+
+<template>
+  <div class="relative w-full h-full">
+    <canvas ref="sceneCanvas" class="w-full h-full"></canvas>
+
+    <a href="/lab" class="absolute top-6 left-6 z-40 flex items-center gap-2 rounded bg-white p-2 text-black">
+      <Icon icon="mdi:arrow-left" />
+      <span>lab</span>
+    </a>
+
+    <div class="absolute bottom-0 right-0 text-white text-xs p-4 flex items-center gap-2">
+      <Icon icon="mdi:info" class="text-xl" />
+      Click marker for more info.
+    </div>
+    <ModalDialog v-model="wonderInfo.isVisible" :max-width="'md'" :theme="'dark'">
+      <template #header>
+        <h2 class="text-xl font-bold text-white mb-2">
+          {{ wonderInfo.currentWonder?.name }}
+        </h2>
+      </template>
+
+      <template #body>
+        <div class="pt-2">
+          <p class="text-gray-200 text-sm mb-3">
+            {{ wonderInfo.currentWonder?.description }}
+          </p>
+        </div>
+      </template>
+
+      <template #footer>
+        <div v-if="wonderInfo.isVisible && wonderInfo.currentWonder"
+             class="flex items-center justify-between text-gray-300">
+            <span class="text-sm py-1 px-2 rounded-full inline-block bg-gray-800/50">
+              {{ formatCoordinates(wonderInfo.currentWonder.latitude, wonderInfo.currentWonder.longitude) }}
+            </span>
+          <a :href="'https://www.openstreetmap.org/?#map=16/'+wonderInfo.currentWonder.latitude+'/'+wonderInfo.currentWonder.longitude"
+             target="_blank" class="text-2xl text-blue-600">
+            <Icon icon="mdi:directions" class="text-xl" />
+          </a>
+        </div>
+      </template>
+    </ModalDialog>
+  </div>
+</template>

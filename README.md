@@ -1,38 +1,32 @@
-## 🚀 Project Structure
+# rahul-chavda.github.io
 
-Inside of your Astro project, you'll see the following folders and files:
+Personal portfolio and blog built as a monorepo — an [Astro](https://astro.build) blog with isolated interactive labs powered by [Turborepo](https://turbo.build).
 
-```text
-├── public/
-├── src/
-│   ├── components/
-│   ├── content/
-│   ├── layouts/
-│   └── pages/
-├── astro.config.mjs
-├── README.md
-├── package.json
-└── tsconfig.json
+## Getting Started
+
+```bash
+# Install all dependencies
+npm install
+
+# Build everything (labs first, then blog)
+npm run build
 ```
 
-Astro looks for `.astro` or `.md` files in the `src/pages/` directory. Each page is exposed as a route based on its file name.
+## Development
 
-There's nothing special about `src/components/`, but that's where we like to put any Astro/React/Vue/Svelte/Preact components.
+| Command | Description |
+| :--- | :--- |
+| `npm run dev` | Run only the Astro blog → `http://localhost:4321` |
+| `npm run dev:<lab>` | Run one lab as a standalone page → `http://localhost:5173` |
+| `npm run watch:<lab>` | Build/watch one lab for embedding in the blog |
+| `npm run build` | Topological production build |
+| `npm run clean` | Clear workspace build outputs and the `.turbo` cache |
 
-The `src/content/` directory contains "collections" of related Markdown and MDX documents. Use `getCollection()` to retrieve posts from `src/content/blog/`, and type-check your frontmatter using an optional schema. See [Astro's Content Collections docs](https://docs.astro.build/en/guides/content-collections/) to learn more.
+For example, use `npm run watch:iptv` and `npm run dev` in separate terminals to work on the IPTV lab inside the blog. `npm run dev:iptv` opens the lab standalone and does not populate the blog embed.
 
-Any static assets, like images, can be placed in the `public/` directory.
+## Documentation
 
-## 🧞 Commands
-
-All commands are run from the root of the project, from a terminal:
-
-| Command                   | Action                                           |
-| :------------------------ | :----------------------------------------------- |
-| `npm install`             | Installs dependencies                            |
-| `npm run dev`             | Starts local dev server at `localhost:4321`      |
-| `npm run build`           | Build your production site to `./dist/`          |
-| `npm run preview`         | Preview your build locally, before deploying     |
-| `npm run astro ...`       | Run CLI commands like `astro add`, `astro check` |
-| `npm run astro -- --help` | Get help using the Astro CLI                     |
-
+- [Architecture Blueprint](docs/ARCHITECTURE.md) — Design principles, build pipeline, CSS isolation, memory management
+- [Adding a New Lab](docs/ADDING_A_NEW_LAB.md) — Step-by-step guide to scaffold and integrate a new lab
+- [Embedding Labs](docs/EMBEDDING_LABS.md) — Using `<LabEmbed />` in Astro pages and MDX posts
+- [Maintenance](docs/MAINTENANCE.md) — Daily commands, Turbo caching, troubleshooting
